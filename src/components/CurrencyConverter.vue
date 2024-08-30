@@ -11,6 +11,8 @@
 				v-model="amount"
 				id="amount"
 				@input="convertCurrency"
+				min="0.01"
+				step="0.01"
 				class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
 			/>
 		</div>
@@ -56,9 +58,7 @@
 		</div>
 
 		<div class="text-center mt-6">
-			<p class="text-lg font-semibold">
-				{{ amount }} {{ fromCurrency }} = {{ result }} {{ toCurrency }}
-			</p>
+			<p class="text-lg font-semibold">{{ result }}</p>
 		</div>
 	</div>
 </template>
@@ -114,10 +114,15 @@ export default {
 				})
 		},
 		convertCurrency() {
+			if (this.amount <= 0) {
+				this.result = 'Please enter a positive amount'
+				return
+			}
+
 			if (!this.exchangeRates[this.toCurrency]) return
-			this.result = (this.amount * this.exchangeRates[this.toCurrency]).toFixed(
-				2
-			)
+			this.result = `${this.amount} ${this.fromCurrency} = ${(
+				this.amount * this.exchangeRates[this.toCurrency]
+			).toFixed(2)} ${this.toCurrency}`
 		},
 	},
 	mounted() {
